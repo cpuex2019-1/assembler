@@ -24,7 +24,7 @@ class controller {
 public:
   // current line number being processed
   int program_num;
-  int program_counter;
+  int program_addr;
 
   // constructor
   controller(const char *fname, loader *l, Log *l_level);

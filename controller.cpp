@@ -24,7 +24,7 @@ controller::controller(const char *fname, loader *l, Log *l_level) {
   ld = l;
   log_level = l_level;
   program_num = 0;
-  program_counter = 0;
+  program_addr = 0;
 
   string filename = fname;
   filename.pop_back(); // 最後のsを削除
@@ -43,9 +43,9 @@ void controller::assemble() {
   while (program_num < ld->end_line_num) {
     vector<int> line_vec = ld->get_program_by_line_num(program_num);
     if (*log_level >= DEBUG) { // raw_programを出力
-      printf("\n");
+      printf("\nDEBUG\tprogram address:%d\n", program_addr);
       string one_raw_program = ld->get_raw_program_by_line_num(program_num);
-      printf("DEBUG\t%d:\t%s\n", program_num, one_raw_program.c_str());
+      printf("%d:\t%s\n", program_num, one_raw_program.c_str());
     }
     if (*log_level >= TRACE) { // programを出力
       printf("TRACE\t");
@@ -59,7 +59,7 @@ void controller::assemble() {
     exec_code(line_vec);
 
     program_num++;
-    program_counter += 4;
+    program_addr += 4;
 
     if (program_num >= ld->end_line_num) {
       fprintf(outputfile, ";\n");
@@ -668,46 +668,194 @@ void controller::exec_code(vector<int> line_vec) {
     int rd = *iter;
     iter++;
     int rs = *iter;
+    iter++;
+
+    unsigned int op_bit = 0x0;
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = (0x0 << 6);
+    unsigned int funct_bit = 0x20;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
 
   } else if (opecode == BC) { // BC label(pc+offset<<2)
-    program_num = *iter;
+    int offset = *iter;
+
+    unsigned int op_bit = (0x32 << 26);
+    unsigned int offset_bit = offset;
+
+    unsigned int code = op_bit | offset_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
 
   } else if (opecode == BEQ) { // BEQ rs rt label(pc+offset<<2)
     int rs = *iter;
     iter++;
     int rt = *iter;
     iter++;
+    int offset = *iter;
 
-    program_num = *iter;
+    unsigned int op_bit = (0x4 << 26);
+    unsigned int rs_bit = ((unsigned int)rs << 21);
+    unsigned int rt_bit = ((unsigned int)rt << 16);
+    unsigned int offset_bit = offset;
+
+    unsigned int code = op_bit | rs_bit | rt_bit | offset_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
 
   } else if (opecode == BNE) { // BNE rs rt label(pc+offset<<2)
     int rs = *iter;
     iter++;
     int rt = *iter;
     iter++;
+    int offset = *iter;
 
-    program_num = *iter;
+    unsigned int op_bit = (0x5 << 26);
+    unsigned int rs_bit = ((unsigned int)rs << 21);
+    unsigned int rt_bit = ((unsigned int)rt << 16);
+    unsigned int offset_bit = offset;
+
+    unsigned int code = op_bit | rs_bit | rt_bit | offset_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
 
   } else if (opecode == J) { // J label
-    program_num = *iter;
+    int addr = *iter;
+
+    unsigned int op_bit = (0x2 << 26);
+    unsigned int addr_bit = addr;
+
+    unsigned int code = op_bit | addr_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
 
   } else if (opecode == JR) { // JR rs
     int rs = *iter;
 
-  } else if (opecode == JAL) { // JAL label (next addr is program_num*4)
+    unsigned int op_bit = 0x0;
+    unsigned int rd_bit = 0x0;
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0x9;
 
-    program_num = *iter;
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
+  } else if (opecode == JAL) { // JAL label (next addr is program_num*4)
+    int addr = *iter;
+
+    unsigned int op_bit = (0x3 << 26);
+    unsigned int addr_bit = addr;
+
+    unsigned int code = op_bit | addr_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
 
   } else if (opecode == JALR) { // JALR rd, rs
     int rd = *iter;
     iter++;
     int rs = *iter;
+    iter++;
+
+    unsigned int op_bit = 0x0;
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0x9;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
 
   } else if (opecode == NOP) { // nop
-    program_num++;
+    unsigned int code = 0x0;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
 
   } else if (opecode == OUT) { // output 未対応
-    program_num++;
+    int rs = *iter;
+    iter++;
+    unsigned int op_bit = 0x3F;
+    unsigned int rd_bit = 0x0;
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0x0;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
 
   } else {
     program_num++;

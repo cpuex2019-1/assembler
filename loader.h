@@ -43,6 +43,7 @@ public:
   //~loader();
 
   int get_line_num_by_label(string label);
+  int get_prog_addr_num_by_label(string label);
   vector<int> get_program_by_label(string label);
   vector<int> get_program_by_line_num(int l_num);
   string get_raw_program_by_line_num(int l_num);

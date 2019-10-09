@@ -1018,8 +1018,8 @@ vector<int> loader::format_code(vector<string> code) {
         throw 1;
       } else {
         string label_str = *iter;
-        int label_num = get_line_num_by_label(label_str);
-        result.push_back(label_num);
+        int label_addr = get_prog_addr_num_by_label(label_str);
+        result.push_back(label_addr);
       }
     } catch (int arg_num) {
       printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", program_num, arg_num,
@@ -1048,8 +1048,8 @@ vector<int> loader::format_code(vector<string> code) {
         throw 3;
       } else {
         string label_str = *iter;
-        int label_num = get_line_num_by_label(label_str);
-        result.push_back(label_num);
+        int label_addr = get_prog_addr_num_by_label(label_str);
+        result.push_back(label_addr);
       }
     } catch (int arg_num) {
       printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", program_num, arg_num,
@@ -1078,7 +1078,7 @@ vector<int> loader::format_code(vector<string> code) {
         throw 3;
       } else {
         string label_str = *iter;
-        int label_num = get_line_num_by_label(label_str);
+        int label_num = get_prog_addr_num_by_label(label_str);
         result.push_back(label_num);
       }
     } catch (int arg_num) {
@@ -1094,8 +1094,8 @@ vector<int> loader::format_code(vector<string> code) {
         throw 1;
       } else {
         string label_str = *iter;
-        int label_num = get_line_num_by_label(label_str);
-        result.push_back(label_num);
+        int label_addr = get_prog_addr_num_by_label(label_str);
+        result.push_back(label_addr);
       }
     } catch (int arg_num) {
       printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", program_num, arg_num,
@@ -1127,7 +1127,7 @@ vector<int> loader::format_code(vector<string> code) {
         throw 1;
       } else {
         string label_str = *iter;
-        int label_num = get_line_num_by_label(label_str);
+        int label_num = get_prog_addr_num_by_label(label_str);
         result.push_back(label_num);
       }
     } catch (int arg_num) {
@@ -1188,6 +1188,18 @@ int loader::get_line_num_by_label(string label) {
     exit(1);
   } else {
     return label_map[label];
+  }
+}
+int loader::get_prog_addr_num_by_label(string label) {
+  auto it = label_map.find(label);
+  if (it == label_map.end()) {
+    if (*log_level >= FATAL) {
+      printf("FATAL\tline:%d\tnot found label: %s\n", program_num,
+             label.c_str());
+    }
+    exit(1);
+  } else {
+    return (label_map[label] + 1) * 4;
   }
 }
 vector<int> loader::get_program_by_label(string label) {
