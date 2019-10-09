@@ -26,7 +26,7 @@ loader::~loader() {
 }
 */
 int loader::get_reg_by_base_plus_offset(string base_plus_offset) {
-  regex sep("([+-]?)(0|[1-9][0-9]*)\\(\\$(3[0-1]|[1-2][0-9]|[0-9])\\)");
+  regex sep("^([+-]?)(0|[1-9][0-9]*)\\(\\$(3[0-1]|[1-2][0-9]|[0-9])\\)$");
   sregex_token_iterator iter(base_plus_offset.begin(), base_plus_offset.end(),
                              sep, 3);
   sregex_token_iterator end;
@@ -52,7 +52,7 @@ int loader::get_reg_by_base_plus_offset(string base_plus_offset) {
   }
 }
 int loader::get_offset_by_base_plus_offset(string base_plus_offset) {
-  regex sep("([+-]?)(0|[1-9][0-9]*)\\(\\$(3[0-1]|[1-2][0-9]|[0-9])\\)");
+  regex sep("^([+-]?)(0|[1-9][0-9]*)\\(\\$(3[0-1]|[1-2][0-9]|[0-9])\\)$");
   sregex_token_iterator iter(base_plus_offset.begin(), base_plus_offset.end(),
                              sep, {1, 2});
   sregex_token_iterator end;
@@ -85,7 +85,7 @@ int loader::get_offset_by_base_plus_offset(string base_plus_offset) {
 }
 
 int loader::get_reg_num(string reg_str) {
-  regex sep("\\$(3[0-1]|[1-2][0-9]|[0-9])");
+  regex sep("^\\$(3[0-1]|[1-2][0-9]|[0-9])$");
   sregex_token_iterator iter(reg_str.begin(), reg_str.end(), sep, 1);
   sregex_token_iterator end;
   if (iter == end) {
@@ -108,18 +108,14 @@ int loader::get_reg_num(string reg_str) {
   }
 }
 
-int loader::get_immediate(string immediate_str) {
-  regex sep("([+-]?)(0|[1-9][0-9]*)"); //([+-]?)([0-9]+)
+int loader::get_immediate(string init_immediate_str) {
+  // check immediate
+  string immediate_str = init_immediate_str;
+  regex sep("^([+-]?)(0|[1-9][0-9]*)$"); //([+-]?)([0-9]+)
   sregex_token_iterator iter(immediate_str.begin(), immediate_str.end(), sep,
                              {1, 2});
   sregex_token_iterator end;
-  if (iter == end) {
-    if (*log_level >= FATAL) {
-      printf("FATAL\tline:%d\tinvalid immediate[%s]\n", program_num,
-             immediate_str.c_str());
-    }
-    exit(1);
-  } else {
+  if (iter != end) {
     string sign = iter->str();
     iter++;
     if (iter == end) {
@@ -145,6 +141,55 @@ int loader::get_immediate(string immediate_str) {
         }
         exit(1);
       }
+    }
+  } else { // ha(label) or lo(label)
+    immediate_str = init_immediate_str;
+    regex halo_regex("^(ha|lo)\\(([A-Za-z][\\w\\.]*)\\)$");
+    sregex_token_iterator iter(immediate_str.begin(), immediate_str.end(),
+                               halo_regex, {1, 2});
+    sregex_token_iterator end;
+    if (iter != end) {
+
+      string halo = iter->str();
+      iter++;
+      if (iter == end) {
+        if (*log_level >= FATAL) {
+          printf("FATAL\tline:%d\tinvalid immediate[%s]\n", program_num,
+                 immediate_str.c_str());
+        }
+        exit(1);
+      } else {
+        try {
+          string label_str =
+              iter->str(); // convert string to int to unsigned int
+          int label_num = get_line_num_by_label(label_str);
+          unsigned int label_addr = ((unsigned int)label_num) * 4;
+
+          if (halo == "ha") {
+            return label_addr >> 16;
+          } else if (halo == "lo") {
+            return (label_addr << 16) >> 16;
+          } else {
+            if (*log_level >= FATAL) {
+              printf("FATAL\tline:%d\tinvalid immediate: [%s]\n", program_num,
+                     immediate_str.c_str());
+            }
+            exit(1);
+          }
+        } catch (const std::invalid_argument &e) {
+          if (*log_level >= FATAL) {
+            printf("FATAL\tline:%d\tinvalid immediate: [%s]\n", program_num,
+                   immediate_str.c_str());
+          }
+          exit(1);
+        }
+      }
+    } else {
+      if (*log_level >= FATAL) {
+        printf("FATAL\tline:%d\tinvalid immediate[%s]\n", program_num,
+               immediate_str.c_str());
+      }
+      exit(1);
     }
   }
 }
@@ -276,9 +321,9 @@ void loader::load_line(string line) {
 
   if (code[0] != "") {
     raw_program.push_back(opecode_str + "\t" + res);
-    program_num++; // increment before processing the line
     vector<int> formatted_code = format_code(code);
     program_map.push_back(formatted_code);
+    program_num++; // increment before processing the line
   }
 }
 
@@ -1018,8 +1063,8 @@ vector<int> loader::format_code(vector<string> code) {
         throw 1;
       } else {
         string label_str = *iter;
-        int label_addr = get_prog_addr_num_by_label(label_str);
-        result.push_back(label_addr);
+        int label_num = get_line_num_by_label(label_str);
+        result.push_back(label_num - program_num);
       }
     } catch (int arg_num) {
       printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", program_num, arg_num,
@@ -1048,8 +1093,8 @@ vector<int> loader::format_code(vector<string> code) {
         throw 3;
       } else {
         string label_str = *iter;
-        int label_addr = get_prog_addr_num_by_label(label_str);
-        result.push_back(label_addr);
+        int label_num = get_line_num_by_label(label_str);
+        result.push_back(label_num - program_num);
       }
     } catch (int arg_num) {
       printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", program_num, arg_num,
@@ -1078,8 +1123,8 @@ vector<int> loader::format_code(vector<string> code) {
         throw 3;
       } else {
         string label_str = *iter;
-        int label_num = get_prog_addr_num_by_label(label_str);
-        result.push_back(label_num);
+        int label_num = get_line_num_by_label(label_str);
+        result.push_back(label_num - program_num);
       }
     } catch (int arg_num) {
       printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", program_num, arg_num,
@@ -1094,8 +1139,8 @@ vector<int> loader::format_code(vector<string> code) {
         throw 1;
       } else {
         string label_str = *iter;
-        int label_addr = get_prog_addr_num_by_label(label_str);
-        result.push_back(label_addr);
+        int label_num = get_line_num_by_label(label_str);
+        result.push_back(label_num);
       }
     } catch (int arg_num) {
       printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", program_num, arg_num,
@@ -1127,7 +1172,7 @@ vector<int> loader::format_code(vector<string> code) {
         throw 1;
       } else {
         string label_str = *iter;
-        int label_num = get_prog_addr_num_by_label(label_str);
+        int label_num = get_line_num_by_label(label_str);
         result.push_back(label_num);
       }
     } catch (int arg_num) {
@@ -1199,7 +1244,7 @@ int loader::get_prog_addr_num_by_label(string label) {
     }
     exit(1);
   } else {
-    return (label_map[label] + 1) * 4;
+    return label_map[label] * 4;
   }
 }
 vector<int> loader::get_program_by_label(string label) {

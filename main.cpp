@@ -21,7 +21,4 @@ int main(int argc, char *argv[]) {
   ld->print_program_map();
 
   control.assemble();
-  /*
-
-  */
 }

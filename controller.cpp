@@ -43,9 +43,9 @@ void controller::assemble() {
   while (program_num < ld->end_line_num) {
     vector<int> line_vec = ld->get_program_by_line_num(program_num);
     if (*log_level >= DEBUG) { // raw_programを出力
-      printf("\nDEBUG\tprogram address:%d\n", program_addr);
+      printf("\nDEBUG\tprogram address:%d", program_addr);
       string one_raw_program = ld->get_raw_program_by_line_num(program_num);
-      printf("%d:\t%s\n", program_num, one_raw_program.c_str());
+      printf("\t%s\n", one_raw_program.c_str());
     }
     if (*log_level >= TRACE) { // programを出力
       printf("TRACE\t");
@@ -123,7 +123,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int op_bit = 0x8 << 26;
     unsigned int rd_bit = ((unsigned int)rd << 21);
     unsigned int rs_bit = ((unsigned int)rs << 16);
-    unsigned int immediate_bit = immediate;
+    unsigned int immediate_bit = (unsigned int)immediate & 0xffff;
 
     unsigned int code = op_bit | rd_bit | rs_bit | immediate_bit;
 
@@ -295,7 +295,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int op_bit = 0xC << 26;
     unsigned int rd_bit = ((unsigned int)rd << 21);
     unsigned int rs_bit = ((unsigned int)rs << 16);
-    unsigned int immediate_bit = immediate;
+    unsigned int immediate_bit = (unsigned int)immediate & 0xffff;
 
     unsigned int code = op_bit | rd_bit | rs_bit | immediate_bit;
 
@@ -342,7 +342,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int op_bit = 0xD << 26;
     unsigned int rd_bit = ((unsigned int)rd << 21);
     unsigned int rs_bit = ((unsigned int)rs << 16);
-    unsigned int immediate_bit = immediate;
+    unsigned int immediate_bit = (unsigned int)immediate & 0xffff;
 
     unsigned int code = op_bit | rd_bit | rs_bit | immediate_bit;
 
@@ -414,7 +414,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int op_bit = 0xE << 26;
     unsigned int rd_bit = ((unsigned int)rd << 21);
     unsigned int rs_bit = ((unsigned int)rs << 16);
-    unsigned int immediate_bit = immediate;
+    unsigned int immediate_bit = (unsigned int)immediate & 0xffff;
 
     unsigned int code = op_bit | rd_bit | rs_bit | immediate_bit;
 
@@ -586,7 +586,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int op_bit = (0x23 << 26);
     unsigned int rd_bit = ((unsigned int)rd << 21);
     unsigned int base_bit = ((unsigned int)base << 16);
-    unsigned int offset_bit = (unsigned int)offset;
+    unsigned int offset_bit = (unsigned int)offset & 0xffff;
 
     unsigned int code = op_bit | rd_bit | base_bit | offset_bit;
 
@@ -608,7 +608,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int op_bit = (0x20 << 26);
     unsigned int rd_bit = ((unsigned int)rd << 21);
     unsigned int base_bit = ((unsigned int)base << 16);
-    unsigned int offset_bit = (unsigned int)offset;
+    unsigned int offset_bit = (unsigned int)offset & 0xffff;
 
     unsigned int code = op_bit | rd_bit | base_bit | offset_bit;
 
@@ -630,7 +630,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int op_bit = (0x2B << 26);
     unsigned int rd_bit = ((unsigned int)rd << 21);
     unsigned int base_bit = ((unsigned int)base << 16);
-    unsigned int offset_bit = (unsigned int)offset;
+    unsigned int offset_bit = (unsigned int)offset & 0xffff;
 
     unsigned int code = op_bit | rd_bit | base_bit | offset_bit;
 
@@ -652,7 +652,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int op_bit = (0x28 << 26);
     unsigned int rd_bit = ((unsigned int)rd << 21);
     unsigned int base_bit = ((unsigned int)base << 16);
-    unsigned int offset_bit = (unsigned int)offset;
+    unsigned int offset_bit = (unsigned int)offset & 0xffff;
 
     unsigned int code = op_bit | rd_bit | base_bit | offset_bit;
 
@@ -692,7 +692,7 @@ void controller::exec_code(vector<int> line_vec) {
     int offset = *iter;
 
     unsigned int op_bit = (0x32 << 26);
-    unsigned int offset_bit = offset;
+    unsigned int offset_bit = offset & 0xffff; // 下位16bit のみ
 
     unsigned int code = op_bit | offset_bit;
 
@@ -714,7 +714,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int op_bit = (0x4 << 26);
     unsigned int rs_bit = ((unsigned int)rs << 21);
     unsigned int rt_bit = ((unsigned int)rt << 16);
-    unsigned int offset_bit = offset;
+    unsigned int offset_bit = offset & 0xffff; // 下位16bit のみ
 
     unsigned int code = op_bit | rs_bit | rt_bit | offset_bit;
 
@@ -736,7 +736,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int op_bit = (0x5 << 26);
     unsigned int rs_bit = ((unsigned int)rs << 21);
     unsigned int rt_bit = ((unsigned int)rt << 16);
-    unsigned int offset_bit = offset;
+    unsigned int offset_bit = offset & 0xffff; // 下位16bit のみ
 
     unsigned int code = op_bit | rs_bit | rt_bit | offset_bit;
 
