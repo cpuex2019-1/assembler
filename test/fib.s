@@ -1,6 +1,6 @@
 Main:
 
-    addi $4, $0, 30 # fib(immediate)
+    addi $1, $0, 2
         jal	Fibonacci.a
 		j	Exit
 Fibonacci.a:
@@ -23,7 +23,7 @@ True: addi	$4,	$4,	-1	#n>1
 		jal	Fibonacci.a		#fibonacci(n-2)
 		lw	$16,	0($29)		#restore of return value
 		addi	$29,	$29,	4
-        
+
 		add	$2,	$2,	$16	#fibonacci(n-1) + fibonacci(n-2)
 		j	Return
 Return:		lw	$31,	0($29)		#shelter of registers

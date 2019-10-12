@@ -16,9 +16,7 @@ int main(int argc, char *argv[]) {
   loader *ld = new loader(argv[1], &log_level); // load program
 
   controller control(argv[1], ld, &log_level);
-  ld->print_label_map();
   ld->print_raw_program();
-  ld->print_program_map();
 
   control.assemble();
 }
