@@ -962,7 +962,7 @@ void controller::exec_code(vector<int> line_vec) {
   } else if (opecode == OUT) { // output 未対応
     int rs = *iter;
     iter++;
-    unsigned int op_bit = 0x3F;
+    unsigned int op_bit = ((unsigned int)0x3F << 26);
     unsigned int rd_bit = 0x0;
     unsigned int rs_bit = ((unsigned int)rs << 16);
     unsigned int rt_bit = 0x0;

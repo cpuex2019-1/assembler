@@ -12,6 +12,7 @@ arith_float:
 
 arith_logic1:
     addi    $1, $0, 2
+    out $2
     addi    $2, $0, 3
     addi    $8, $0, ha(arith_logic2)
     addi    $9, $0, lo(arith_logic2)
