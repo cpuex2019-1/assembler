@@ -34,7 +34,9 @@ class loader {
   int get_reg_by_base_plus_offset(string base_plus_offset);
   int get_offset_by_base_plus_offset(string base_plus_offset);
   int get_reg_num(string reg_str);
-  int get_immediate(string immediate_str);
+  int get_freg_num(string reg_str);
+  int get_logic_immediate(string immediate_str);
+  int get_arith_immediate(string immediate_str);
 
 public:
   int end_line_num;
