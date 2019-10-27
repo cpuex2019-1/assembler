@@ -22,6 +22,7 @@ arith_float:
     fdiv     $f6, $f4, $f5
     sqrt     $f6, $f5
     sltf     $1, $f5, $f4
+    fneg     $f5, $f4
     sf      $f6, 0($29)
     lf      $f7, 0($29)
     movf    $f7, $f4

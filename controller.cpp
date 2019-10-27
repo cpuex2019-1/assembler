@@ -724,6 +724,29 @@ void controller::exec_code(vector<int> line_vec) {
 
     fprintf(outputfile, "%08x", code);
 
+  } else if (opecode == FNEG) { // FNEG rd <- - rs
+    int rd = *iter;
+    iter++;
+    int rs = *iter;
+
+    unsigned int op_bit = ((unsigned int)0x11 << 26);
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0x9;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
   } else if (opecode == LW) { // LW rd, offset(base)
     int rd = *iter;
     iter++;
