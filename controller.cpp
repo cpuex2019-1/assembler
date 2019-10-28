@@ -1003,6 +1003,67 @@ void controller::exec_code(vector<int> line_vec) {
 
     fprintf(outputfile, "%08x", code);
 
+  } else if (opecode == JR) { // JR rs
+    int rs = *iter;
+
+    unsigned int op_bit = 0x0;
+    unsigned int rd_bit = 0x0;
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0x9;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
+  } else if (opecode == JAL) { // JAL label (next addr is program_num*4)
+    int addr = *iter;
+
+    unsigned int op_bit = (0x3 << 26);
+    unsigned int addr_bit = addr;
+
+    unsigned int code = op_bit | addr_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
+  } else if (opecode == JALR) { // JALR rd, rs
+    int rd = *iter;
+    iter++;
+    int rs = *iter;
+    iter++;
+
+    unsigned int op_bit = 0x0;
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0x9;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
   } else if (opecode == INB) { // INB rd
     int rd = *iter;
 
@@ -1087,27 +1148,6 @@ void controller::exec_code(vector<int> line_vec) {
 
     fprintf(outputfile, "%08x", code);
 
-  } else if (opecode == INF) { // INF rd
-    int rd = *iter;
-
-    unsigned int op_bit = (0x3F << 26);
-    unsigned int rd_bit = ((unsigned int)rd << 21);
-    unsigned int rs_bit = 0x0;
-    unsigned int rt_bit = 0x0;
-    unsigned int shamt_bit = (0x3 << 6);
-    unsigned int funct_bit = 0x2;
-
-    unsigned int code =
-        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
-
-    if (*log_level >= DEBUG) {
-      printf("hex(16):%08x\tbinary:", code);
-      print_binary(code);
-      printf("\n");
-    }
-
-    fprintf(outputfile, "%08x", code);
-
   } else if (opecode == OUTB) { // OUTB rs
     int rs = *iter;
 
@@ -1129,79 +1169,7 @@ void controller::exec_code(vector<int> line_vec) {
 
     fprintf(outputfile, "%08x", code);
 
-  } else if (opecode == JR) { // JR rs
-    int rs = *iter;
-
-    unsigned int op_bit = 0x0;
-    unsigned int rd_bit = 0x0;
-    unsigned int rs_bit = ((unsigned int)rs << 16);
-    unsigned int rt_bit = 0x0;
-    unsigned int shamt_bit = 0x0;
-    unsigned int funct_bit = 0x9;
-
-    unsigned int code =
-        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
-
-    if (*log_level >= DEBUG) {
-      printf("hex(16):%08x\tbinary:", code);
-      print_binary(code);
-      printf("\n");
-    }
-
-    fprintf(outputfile, "%08x", code);
-
-  } else if (opecode == JAL) { // JAL label (next addr is program_num*4)
-    int addr = *iter;
-
-    unsigned int op_bit = (0x3 << 26);
-    unsigned int addr_bit = addr;
-
-    unsigned int code = op_bit | addr_bit;
-
-    if (*log_level >= DEBUG) {
-      printf("hex(16):%08x\tbinary:", code);
-      print_binary(code);
-      printf("\n");
-    }
-
-    fprintf(outputfile, "%08x", code);
-
-  } else if (opecode == JALR) { // JALR rd, rs
-    int rd = *iter;
-    iter++;
-    int rs = *iter;
-    iter++;
-
-    unsigned int op_bit = 0x0;
-    unsigned int rd_bit = ((unsigned int)rd << 21);
-    unsigned int rs_bit = ((unsigned int)rs << 16);
-    unsigned int rt_bit = 0x0;
-    unsigned int shamt_bit = 0x0;
-    unsigned int funct_bit = 0x9;
-
-    unsigned int code =
-        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
-
-    if (*log_level >= DEBUG) {
-      printf("hex(16):%08x\tbinary:", code);
-      print_binary(code);
-      printf("\n");
-    }
-
-    fprintf(outputfile, "%08x", code);
-
-  } else if (opecode == NOP) { // nop
-    unsigned int code = 0x0;
-
-    if (*log_level >= DEBUG) {
-      printf("hex(16):%08x\tbinary:", code);
-      print_binary(code);
-      printf("\n");
-    }
-
-    fprintf(outputfile, "%08x", code);
-
-  } else if (opecode == OUT) { // output 未対応
+  } else if (opecode == OUT) {
     int rs = *iter;
     iter++;
     unsigned int op_bit = ((unsigned int)0x3F << 26);
@@ -1213,6 +1181,58 @@ void controller::exec_code(vector<int> line_vec) {
 
     unsigned int code =
         op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
+  } else if (opecode == INF) { // INF rd
+    int rd = *iter;
+
+    unsigned int op_bit = (0x3F << 26);
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = 0x0;
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = (0x3 << 6);
+    unsigned int funct_bit = 0x2;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
+  } else if (opecode == OUTF) {
+    int rs = *iter;
+    iter++;
+    unsigned int op_bit = ((unsigned int)0x3F << 26);
+    unsigned int rd_bit = 0x0;
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = (0x3 << 6);
+    unsigned int funct_bit = 0x3;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+  } else if (opecode == NOP) { // nop
+    unsigned int code = 0x0;
 
     if (*log_level >= DEBUG) {
       printf("hex(16):%08x\tbinary:", code);
