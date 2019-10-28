@@ -914,7 +914,7 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int rs_bit = ((unsigned int)rs << 16);
     unsigned int rt_bit = 0x0;
     unsigned int shamt_bit = 0x0;
-    unsigned int funct_bit = 0x0;
+    unsigned int funct_bit = 0x3f;
 
     unsigned int code =
         op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
