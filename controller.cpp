@@ -34,8 +34,13 @@ controller::controller(const char *fname, loader *l, Log *l_level) {
     printf("cannot open file\n");
     exit(1);
   }
-  fprintf(outputfile,
-          "memory_initialization_radix=16;\nmemory_initialization_vector=\n");
+  string tmp = fname;
+  tmp.pop_back(); // 最後のsを削除
+  tmp.pop_back(); // 最後の.を削除
+  fprintf(
+      outputfile,
+      "; %s\nmemory_initialization_radix=16;\nmemory_initialization_vector=\n",
+      tmp.c_str());
 }
 
 void controller::assemble() {
