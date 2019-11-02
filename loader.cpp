@@ -1897,17 +1897,14 @@ vector<int> loader::format_code(vector<string> code) {
     }
 
   } else if (opecode == "nop") { // nop
-    result.push_back(JALR);
+    result.push_back(NOP);
 
   } else {
-    if (opecode != "") {
-      if (*log_level >= FATAL) {
-        printf("FATAL\tline:%d\tinvalid opecode:%s\n", load_line_num,
-               opecode.c_str());
-      }
-      exit(1);
+    if (*log_level >= FATAL) {
+      printf("FATAL\tline:%d\tinvalid opecode:%s\n", load_line_num,
+             opecode.c_str());
     }
-    result.push_back(NOP);
+    exit(1);
   }
   return result;
 }
