@@ -643,8 +643,8 @@ vector<int> loader::format_code(vector<string> code) {
       exit(1);
     }
 
-  } else if (opecode == "div") { // DIV rd <- rs / rt
-    result.push_back(DIV);
+  } else if (opecode == "div10") { // DIV10 rd <- rs / 10
+    result.push_back(DIV10);
     try {
       if (iter == code.end()) {
         throw 1;
@@ -660,15 +660,8 @@ vector<int> loader::format_code(vector<string> code) {
         result.push_back(rs);
         iter++;
       }
-      if (iter == code.end()) {
-        throw 3;
-      } else {
-        int rt = get_reg_num(*iter);
-        result.push_back(rt);
-        iter++;
-      }
       if (iter != code.end()) {
-        throw 4;
+        throw 3;
       }
     } catch (int arg_num) {
       printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", load_line_num,

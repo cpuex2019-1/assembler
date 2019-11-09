@@ -1,10 +1,9 @@
 input_output:
-    inb     $1
-    outb    $1
     in      $1
     out     $1
     inf     $f1
     outf    $f1
+    div10   $2, $1
 arith_float:
     addi    $29, $0, 10000
     addi    $4, $0, 16256   # 1.0の上位16bit
@@ -20,9 +19,9 @@ arith_float:
     fsub     $f6, $f5, $f4
     fmul     $f6, $f5, $f5
     fdiv     $f6, $f4, $f5
+    fneg     $f6, $f4
     sqrt     $f6, $f5
     sltf     $1, $f5, $f4
-    fneg     $f5, $f4
     sf      $f6, 0($29)
     lf      $f7, 0($29)
     movf    $f7, $f4
@@ -37,7 +36,7 @@ arith_logic2:
     add     $3, $0, $1
     sub     $3, $2, $1
     mul     $3, $2, $1
-    div     $3, $2, $1
+    div10     $3, $2
     mod     $3, $2, $1
     bne $2,  $1,  arith_logic5
 arith_logic3:

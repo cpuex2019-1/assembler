@@ -1,5 +1,4 @@
 Main:
-
     addi $1, $0, 2
         jal	Fibonacci.a
 		j	Exit

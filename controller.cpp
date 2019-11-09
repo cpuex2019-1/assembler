@@ -190,17 +190,15 @@ void controller::exec_code(vector<int> line_vec) {
 
     fprintf(outputfile, "%08x", code);
 
-  } else if (opecode == DIV) { // DIV rd <- rs / rt
+  } else if (opecode == DIV10) { // DIV10 rd <- rs / 10
     int rd = *iter;
     iter++;
     int rs = *iter;
-    iter++;
-    int rt = *iter;
 
     unsigned int op_bit = 0x0;
     unsigned int rd_bit = ((unsigned int)rd << 21);
     unsigned int rs_bit = ((unsigned int)rs << 16);
-    unsigned int rt_bit = ((unsigned int)rt << 11);
+    unsigned int rt_bit = (0xA << 11);
     unsigned int shamt_bit = (0x2 << 6);
     unsigned int funct_bit = 0x1A;
 
