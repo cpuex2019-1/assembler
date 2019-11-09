@@ -1,4 +1,4 @@
-# assembler(ONABE)
+# assembler for 1st (ONABE)
 ## version 3.3
 ### how to use
 Make sure you can use `g++` and `c++11`, then, compile the programs:
