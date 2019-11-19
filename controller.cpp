@@ -579,6 +579,29 @@ void controller::exec_code(vector<int> line_vec) {
 
     fprintf(outputfile, "%08x", code);
 
+  } else if (opecode == ITOF) { // ITOF rd <- - itof(rs)
+    int rd = *iter;
+    iter++;
+    int rs = *iter;
+
+    unsigned int op_bit = 0x0;
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0xc;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
   } else if (opecode == FADD) { // FADD rd <- rs +. rt
     int rd = *iter;
     iter++;
@@ -702,6 +725,75 @@ void controller::exec_code(vector<int> line_vec) {
 
     fprintf(outputfile, "%08x", code);
 
+  } else if (opecode == SIN) { // SIN rd <- - sin(rs)
+    int rd = *iter;
+    iter++;
+    int rs = *iter;
+
+    unsigned int op_bit = ((unsigned int)0x11 << 26);
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0x5;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
+  } else if (opecode == COS) { // COS rd <- - cos(rs)
+    int rd = *iter;
+    iter++;
+    int rs = *iter;
+
+    unsigned int op_bit = ((unsigned int)0x11 << 26);
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0x6;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
+  } else if (opecode == ATAN) { // ATAN rd <- - atan(rs)
+    int rd = *iter;
+    iter++;
+    int rs = *iter;
+
+    unsigned int op_bit = ((unsigned int)0x11 << 26);
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0x7;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
   } else if (opecode == SLTF) { // SLTF
     int rd = *iter;
     iter++;
@@ -738,6 +830,76 @@ void controller::exec_code(vector<int> line_vec) {
     unsigned int rt_bit = 0x0;
     unsigned int shamt_bit = 0x0;
     unsigned int funct_bit = 0x9;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
+  } else if (opecode == FABS) { // FABS rd <- abs(rs)
+    int rd = *iter;
+    iter++;
+    int rs = *iter;
+
+    unsigned int op_bit = ((unsigned int)0x11 << 26);
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0xa;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
+  } else if (opecode == FLOOR) { // FLOOR rd <- floor(rs)
+
+    int rd = *iter;
+    iter++;
+    int rs = *iter;
+
+    unsigned int op_bit = ((unsigned int)0x11 << 26);
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0xb;
+
+    unsigned int code =
+        op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;
+
+    if (*log_level >= DEBUG) {
+      printf("hex(16):%08x\tbinary:", code);
+      print_binary(code);
+      printf("\n");
+    }
+
+    fprintf(outputfile, "%08x", code);
+
+  } else if (opecode == FTOI) { // FTOI rd <- ftoi(rs)
+    int rd = *iter;
+    iter++;
+    int rs = *iter;
+
+    unsigned int op_bit = ((unsigned int)0x11 << 26);
+    unsigned int rd_bit = ((unsigned int)rd << 21);
+    unsigned int rs_bit = ((unsigned int)rs << 16);
+    unsigned int rt_bit = 0x0;
+    unsigned int shamt_bit = 0x0;
+    unsigned int funct_bit = 0xc;
 
     unsigned int code =
         op_bit | rd_bit | rs_bit | rt_bit | shamt_bit | funct_bit;

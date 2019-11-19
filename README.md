@@ -1,5 +1,5 @@
 # assembler for 2nd(ONABE)
-## version 0.1s
+## version 1.0
 ### how to use
 Make sure you can use `g++` and `c++11`, then, compile the programs:
 ```

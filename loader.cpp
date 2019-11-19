@@ -1163,6 +1163,34 @@ vector<int> loader::format_code(vector<string> code) {
              arg_num, get_raw_program_by_line_num(program_num).c_str());
       exit(1);
     }
+
+  } else if (opecode == "itof") { // ITOF rd <- itof(rs)
+    // rd is a float registor
+    result.push_back(ITOF);
+    try {
+      if (iter == code.end()) {
+        throw 1;
+      } else {
+        int rd = get_freg_num(*iter);
+        result.push_back(rd);
+        iter++;
+      }
+      if (iter == code.end()) {
+        throw 2;
+      } else {
+        int rs = get_reg_num(*iter);
+        result.push_back(rs);
+        iter++;
+      }
+      if (iter != code.end()) {
+        throw 3;
+      }
+    } catch (int arg_num) {
+      printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", load_line_num,
+             arg_num, get_raw_program_by_line_num(program_num).c_str());
+      exit(1);
+    }
+
   } else if (opecode == "fadd") { // FADD rd <- rs +. rt
     result.push_back(FADD);
     try {
@@ -1321,6 +1349,84 @@ vector<int> loader::format_code(vector<string> code) {
       exit(1);
     }
 
+  } else if (opecode == "sin") { // SIN rd <- sin(rs)
+    result.push_back(SIN);
+    try {
+      if (iter == code.end()) {
+        throw 1;
+      } else {
+        int rd = get_freg_num(*iter);
+        result.push_back(rd);
+        iter++;
+      }
+      if (iter == code.end()) {
+        throw 2;
+      } else {
+        int rs = get_freg_num(*iter);
+        result.push_back(rs);
+        iter++;
+      }
+      if (iter != code.end()) {
+        throw 3;
+      }
+    } catch (int arg_num) {
+      printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", load_line_num,
+             arg_num, get_raw_program_by_line_num(program_num).c_str());
+      exit(1);
+    }
+
+  } else if (opecode == "cos") { // COS rd <- cos(rs)
+    result.push_back(COS);
+    try {
+      if (iter == code.end()) {
+        throw 1;
+      } else {
+        int rd = get_freg_num(*iter);
+        result.push_back(rd);
+        iter++;
+      }
+      if (iter == code.end()) {
+        throw 2;
+      } else {
+        int rs = get_freg_num(*iter);
+        result.push_back(rs);
+        iter++;
+      }
+      if (iter != code.end()) {
+        throw 3;
+      }
+    } catch (int arg_num) {
+      printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", load_line_num,
+             arg_num, get_raw_program_by_line_num(program_num).c_str());
+      exit(1);
+    }
+
+  } else if (opecode == "atan") { // ATAN rd <- atan(rs)
+    result.push_back(ATAN);
+    try {
+      if (iter == code.end()) {
+        throw 1;
+      } else {
+        int rd = get_freg_num(*iter);
+        result.push_back(rd);
+        iter++;
+      }
+      if (iter == code.end()) {
+        throw 2;
+      } else {
+        int rs = get_freg_num(*iter);
+        result.push_back(rs);
+        iter++;
+      }
+      if (iter != code.end()) {
+        throw 3;
+      }
+    } catch (int arg_num) {
+      printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", load_line_num,
+             arg_num, get_raw_program_by_line_num(program_num).c_str());
+      exit(1);
+    }
+
   } else if (opecode == "sltf") { // SLTF Rd = if Rs < Rt then 1 else 0
     // *rd is a general register
     result.push_back(SLTF);
@@ -1362,6 +1468,85 @@ vector<int> loader::format_code(vector<string> code) {
         throw 1;
       } else {
         int rd = get_freg_num(*iter);
+        result.push_back(rd);
+        iter++;
+      }
+      if (iter == code.end()) {
+        throw 2;
+      } else {
+        int rs = get_freg_num(*iter);
+        result.push_back(rs);
+        iter++;
+      }
+      if (iter != code.end()) {
+        throw 3;
+      }
+    } catch (int arg_num) {
+      printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", load_line_num,
+             arg_num, get_raw_program_by_line_num(program_num).c_str());
+      exit(1);
+    }
+
+  } else if (opecode == "fabs") { // FABS rd <- abs(rs)
+    result.push_back(FABS);
+    try {
+      if (iter == code.end()) {
+        throw 1;
+      } else {
+        int rd = get_freg_num(*iter);
+        result.push_back(rd);
+        iter++;
+      }
+      if (iter == code.end()) {
+        throw 2;
+      } else {
+        int rs = get_freg_num(*iter);
+        result.push_back(rs);
+        iter++;
+      }
+      if (iter != code.end()) {
+        throw 3;
+      }
+    } catch (int arg_num) {
+      printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", load_line_num,
+             arg_num, get_raw_program_by_line_num(program_num).c_str());
+      exit(1);
+    }
+
+  } else if (opecode == "floor") { // FLOOR rd <- floor(rs)
+    result.push_back(FLOOR);
+    try {
+      if (iter == code.end()) {
+        throw 1;
+      } else {
+        int rd = get_freg_num(*iter);
+        result.push_back(rd);
+        iter++;
+      }
+      if (iter == code.end()) {
+        throw 2;
+      } else {
+        int rs = get_freg_num(*iter);
+        result.push_back(rs);
+        iter++;
+      }
+      if (iter != code.end()) {
+        throw 3;
+      }
+    } catch (int arg_num) {
+      printf("FATAL\tline:%d\tinvalid argument%d: [%s]\n", load_line_num,
+             arg_num, get_raw_program_by_line_num(program_num).c_str());
+      exit(1);
+    }
+
+  } else if (opecode == "ftoi") { // FTOI rd <- ftoi(rs)
+    // rd is a general register
+    result.push_back(FTOI);
+    try {
+      if (iter == code.end()) {
+        throw 1;
+      } else {
+        int rd = get_reg_num(*iter);
         result.push_back(rd);
         iter++;
       }
