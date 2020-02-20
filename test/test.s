@@ -11,12 +11,12 @@ memo:
     addi    $4, $0, 16448   # 3.0の上位16bit
     slli    $4, $4, 16
     sw      $3, 0($29)
-    sw      $4, -4($29)
+    sw      $4, -1($29)
     lf      $f3, 0($29)
-    lf      $f4, -4($29)
+    lf      $f4, -1($29)
     lw      $5, 0($29)
-    sf      $f3, -8($29)
-    lf      $f5, -8($29)
+    sf      $f3, -1($29)
+    lf      $f5, -1($29)
 
 arith:
     add     $3, $0, $1
@@ -47,6 +47,7 @@ jump_jal_jr:
 jump_jal_jalr:
     jal jump_jalr
 branch_bne:
+    slt $3, $2, $1
     sltf $3, $f2, $f1
     bne $3, $2 ,branch_bge
 jump_jalr:
